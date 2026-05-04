@@ -24,9 +24,12 @@ deactivate
 ``````
 pip install -r requirements.txt
 ``````
-
-4. Run Jupyter
+4. Install kernel for jupyter
 ``````
+python -m ipykernel install --user --name=venv --display-name "Python (venv)"
+``````
+5. Run Jupyter
+
 jupyter lab
 ``````
 ## How to execute main
