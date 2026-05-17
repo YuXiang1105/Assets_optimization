@@ -16,6 +16,7 @@ __pycache__/
 *.nav
 *.snm
 *.vrb
+.venv
 
 _build/
 latex.out/
