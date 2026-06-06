@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 import math
+import pandas as pd
 
 m1 = 0.1180850933
 m2 = 0.1619481497
@@ -104,7 +105,7 @@ plt.show()
 #Simulamos pesos aleatorios, todos ellos deben caer debajo de la curva de la frontera eficiente, 
 #es decir, que su varianza sea menor a la de la frontera eficiente para el mismo retorno esperado
 
-
+print("Realizaremos una aproximacion de MonteCarlo, es posible que el programa tarde o no termine bien, ya que la cantidad de combinaciones aleatorias es muy grande. haga crtl+c para detenerlo si es necesario.")
 N = 2000
 lista_monteCarlo = []
 
@@ -136,4 +137,13 @@ plt.grid(True)
 plt.savefig("aproximacion_montecarlo.png", dpi=300, bbox_inches="tight")
 plt.show()
 
-print("Es posible que el programa tarde o no termine bien, ya que la cantidad de combinaciones aleatorias es muy grande. haga crtl+c para detenerlo si es necesario.")
+#Exportamos con pandas a un excel
+tabla = pd.DataFrame(MenoresVarianzas, columns=['Rentabilidad', 'Varianza', 'SP500', 'IBEX35', 'EMM'])
+tabla['Rentabilidad'] = tabla['Rentabilidad'].round(4)
+tabla['Varianza'] = tabla['Varianza'].round(6)
+tabla['SP500'] = tabla['SP500'].round(4)
+tabla['IBEX35'] = tabla['IBEX35'].round(4)
+tabla['EMM'] = tabla['EMM'].round(4)
+
+print(tabla.to_string(index=False))
+tabla.to_excel("frontera_eficiente.xlsx", index=False)
