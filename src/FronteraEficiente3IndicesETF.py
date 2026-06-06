@@ -1,6 +1,8 @@
 import sympy as sp
 import numpy as np
 import matplotlib.pyplot as plt
+import random
+import math
 
 m1 = 0.1180850933
 m2 = 0.1619481497
@@ -97,3 +99,41 @@ plt.grid(True)
 
 plt.savefig("frontera_eficiente.png", dpi=300, bbox_inches="tight")
 plt.show()
+
+#Hacemos una aproximacion de montecarlo para ver que nuestra cartera sea realmente eficiente
+#Simulamos pesos aleatorios, todos ellos deben caer debajo de la curva de la frontera eficiente, 
+#es decir, que su varianza sea menor a la de la frontera eficiente para el mismo retorno esperado
+
+
+N = 2000
+lista_monteCarlo = []
+
+# este comando da solamente los pesos que suman 1
+pesos = np.random.dirichlet(np.ones(3), size=N)
+
+for i in range(N):
+    lista_monteCarlo.append((pesos[i][0], pesos[i][1], pesos[i][2]))
+
+print(f"Se han generado numerosas combinaciones aleatorias de pesos para los activos. Total: {N} combinaciones.")
+plt.figure()
+plt.plot(E_vals, V_vals)
+
+for i in range(len(lista_monteCarlo)):
+    p1Carlo, p2Carlo, p3Carlo = lista_monteCarlo[i]
+    E_random = m1*p1Carlo + m2*p2Carlo + m3*p3Carlo
+    V_random = v1*p1Carlo**2 + v2*p2Carlo**2 + v3*p3Carlo**2 + 2*cv12*p1Carlo*p2Carlo + 2*cv13*p1Carlo*p3Carlo + 2*cv23*p2Carlo*p3Carlo
+    plt.scatter(E_random, V_random, color='red', s=10, alpha=0.5)
+
+plt.xlabel("Retorno esperado (E)")
+plt.ylabel("Varianza (V)")
+plt.title("Aproximacion de Montecarlo con combinaciones aleatorias de pesos")
+
+plt.xlim(0, 0.15)
+plt.ylim(0, 0.05)
+
+plt.grid(True)
+
+plt.savefig("aproximacion_montecarlo.png", dpi=300, bbox_inches="tight")
+plt.show()
+
+print("Es posible que el programa tarde o no termine bien, ya que la cantidad de combinaciones aleatorias es muy grande. haga crtl+c para detenerlo si es necesario.")
