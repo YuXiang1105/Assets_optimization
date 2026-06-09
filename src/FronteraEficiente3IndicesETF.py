@@ -24,7 +24,7 @@ pol3 = V - (v1*p1**2 + v2*p2**2 + v3*p3**2 +
 
 # Creamos el sistema de ecuaciones polinomiales y calculamos el Gröbner
 G = sp.groebner([pol2, pol3], p1, p2, E, V, order='lex')
-eq1, eq2 = G[0], G[1] #sacamos los dos elementos del ideal
+eq1, eq2 = G[0], G[1] # Sacamos los dos elementos del ideal
 
 # Resolvemos el sistema de ecuaciones polinomiales para p1 y p2 en función de E y V usando la base
 # Nos quedaramos con la primera solución, ya que la segunda es la misma pero con p1 y p2 intercambiados, lo que no aporta nada nuevo a la frontera eficiente
@@ -42,7 +42,7 @@ p1_sol_b = sp.simplify(p1_expr.subs(p2, p2_sol_b))  # p1 correspondiente a sol b
 MenoresVarianzas = []
 Esperanzas = []
 
-# El E_valor solo puede estar entre la rentabilidad minima y maxima
+# Discretizacion de la varianza
 recorrer = np.linspace(0.01, 0.04, 1000)
 
 # Las esperanzas tienen que estar entre la rentabilidad minima y maxima, si no, no se pueden calcular los pesos de cada activo, ya que no se pueden obtener soluciones reales para p1 y p2
@@ -147,7 +147,7 @@ for i in range(len(lista_monteCarlo)):
     p1Carlo, p2Carlo, p3Carlo = lista_monteCarlo[i]
     E_random = m1*p1Carlo + m2*p2Carlo + m3*p3Carlo
     V_random = v1*p1Carlo**2 + v2*p2Carlo**2 + v3*p3Carlo**2 + 2*cv12*p1Carlo*p2Carlo + 2*cv13*p1Carlo*p3Carlo + 2*cv23*p2Carlo*p3Carlo
-    plt.scatter(E_random, V_random, color='red', s=10, alpha=0.5)
+    plt.scatter(E_random, V_random, color='red', s=2, alpha=0.5)
 
 # Hacemos el plot similar anterior, pero con un scatterplot (puntos de (E,V)) para ver que se aproxima bien
 plt.xlabel("Retorno esperado (E)")
