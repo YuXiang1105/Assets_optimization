@@ -32,42 +32,52 @@ eq1, eq2 = G[0], G[1] #sacamos los dos elementos del ideal
 p1_expr = sp.solve(eq1, p1)[0]
 eq2_sub = sp.simplify(eq2.subs(p1, p1_expr))
 sol_p2 = sp.solve(eq2_sub, p2)
-p1_sol = sol_p2[0]
-p2_sol = sol_p2[1]
+p2_sol_a = sol_p2[0]
+p2_sol_b = sol_p2[1]
+
+p1_sol_a = sp.simplify(p1_expr.subs(p2, p2_sol_a))  # p1 correspondiente a sol a
+p1_sol_b = sp.simplify(p1_expr.subs(p2, p2_sol_b))  # p1 correspondiente a sol b
 
 # Realizaremos un bucle, para aproximar E y V, y asi obtener los pesos de cada activo para cada punto de la frontera eficiente, quedandonos con el punto de menor varianza para cada valor de E
 MenoresVarianzas = []
 Esperanzas = []
 
 # El E_valor solo puede estar entre la rentabilidad minima y maxima
-recorrer = np.linspace(0.018, 0.04, 1000)
- # Las esperanzas tienen que estar entre la rentabilidad minima y maxima, si no, no se pueden calcular los pesos de cada activo, ya que no se pueden obtener soluciones reales para p1 y p2
+recorrer = np.linspace(0.01, 0.04, 1000)
+
+# Las esperanzas tienen que estar entre la rentabilidad minima y maxima, si no, no se pueden calcular los pesos de cada activo, ya que no se pueden obtener soluciones reales para p1 y p2
 E_valor = 0.0771816605
 while E_valor <= 0.1619481497:
     # Sustituimos los valores de E
-    p1_E = p1_sol.subs(E, E_valor)
-    p2_E = p2_sol.subs(E, E_valor)
-    f_p1 = sp.lambdify(V, p1_E, "numpy")
-    f_p2 = sp.lambdify(V, p2_E, "numpy")
+    p1_a_E = p1_sol_a.subs(E, E_valor)
+    p1_b_E = p1_sol_b.subs(E, E_valor)
+    p2_a_E = p2_sol_a.subs(E, E_valor)
+    p2_b_E = p2_sol_b.subs(E, E_valor)
+    
+    f_p1_a = sp.lambdify(V, p1_a_E, "numpy")
+    f_p1_b = sp.lambdify(V, p1_b_E, "numpy")
+    f_p2_a = sp.lambdify(V, p2_a_E, "numpy")
+    f_p2_b = sp.lambdify(V, p2_b_E, "numpy")
 
     V_frontera, p1_f, p2_f, p3_f = [], [], [], []
 
     for V_valor in recorrer:
-        try:
-            # Pasamos los valores a tipo float y calculamos el peso 3, que era dependiente de los otros 2 por la reestriccion
-            pol1It = float(np.real(f_p1(V_valor)))
-            pol2It = float(np.real(f_p2(V_valor)))
-            pol3It = 1 - pol1It - pol2It
-            if (np.isfinite(pol1It) and np.isfinite(pol2It) and np.isfinite(pol3It) and pol1It >= 0 and pol2It >= 0 and pol3It >= 0):
-            # Ponemos la reestriccion de que los pesos no pueden ser negativos, ya que sino el inversor estaria vendiendo el activo
-                V_frontera.append(V_valor)
-                # Guardamos los pessos
-                p1_f.append(pol1It)
-                p2_f.append(pol2It)
-                p3_f.append(pol3It)
-        except:
-            # Si da un fallo, saltamos a la siguiuente iteracion, que puede ocurrir si una de las reestricciones no se cumple
-            continue
+        for (fa, fb) in [(f_p1_a, f_p2_a), (f_p1_b, f_p2_b)]:
+            try:
+                # Pasamos los valores a tipo float y calculamos el peso 3, que era dependiente de los otros 2 por la reestriccion
+                pol1It = float(np.real(fa(V_valor)))
+                pol2It = float(np.real(fb(V_valor)))
+                pol3It = 1 - pol1It - pol2It
+                if (np.isfinite(pol1It) and np.isfinite(pol2It) and np.isfinite(pol3It) and pol1It >= 0 and pol2It >= 0 and pol3It >= 0):
+                # Ponemos la reestriccion de que los pesos no pueden ser negativos, ya que sino el inversor estaria vendiendo el activo
+                    V_frontera.append(V_valor)
+                    # Guardamos los pesos
+                    p1_f.append(pol1It)
+                    p2_f.append(pol2It)
+                    p3_f.append(pol3It)
+            except:
+                # Si da un fallo, saltamos a la siguiuente iteracion, que puede ocurrir si una de las reestricciones no se cumple
+                continue
 
     if V_frontera:
         # Guardamos el punto de menor varianza para cada valor de E, que es el punto de la frontera eficiente
@@ -117,7 +127,7 @@ plt.show()
 # Hacemos una aproximacion de montecarlo para ver que nuestra cartera sea realmente eficiente
 # Simulamos pesos aleatorios, todos ellos deben caer debajo de la curva de la frontera eficiente, es decir, que su varianza sea menor a la de la frontera eficiente para el mismo retorno esperado
 
-print("Realizaremos una aproximacion de MonteCarlo, es posible que el programa tarde o no termine bien, ya que la cantidad de combinaciones aleatorias es muy grande. haga crtl+c para detenerlo si es necesario.")
+print("Realizaremos una aproximacion de MonteCarlo, es posible que el programa tarde o no termine bien, ya que la cantidad de combinaciones aleatorias es muy grande. Haga crtl+c para detenerlo si es necesario.")
 N = 2000
 lista_monteCarlo = []
 
