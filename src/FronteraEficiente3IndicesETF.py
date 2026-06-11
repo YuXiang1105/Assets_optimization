@@ -46,8 +46,11 @@ Esperanzas = []
 recorrer = np.linspace(0.01, 0.04, 1000)
 
 # Las esperanzas tienen que estar entre la rentabilidad minima y maxima, si no, no se pueden calcular los pesos de cada activo, ya que no se pueden obtener soluciones reales para p1 y p2
-E_valor = 0.0771816605
-while E_valor <= 0.1619481497:
+E_min = min(m1, m2, m3)
+E_max = max(m1, m2, m3)
+
+E_vals = np.linspace(float(E_min), float(E_max), 1000)
+for E_valor in E_vals:
     # Sustituimos los valores de E
     p1_a_E = p1_sol_a.subs(E, E_valor)
     p1_b_E = p1_sol_b.subs(E, E_valor)
@@ -86,7 +89,6 @@ while E_valor <= 0.1619481497:
         MenoresVarianzas.append([E_valor, V_frontera[i], p1_f[i], p2_f[i], p3_f[i]])
         Esperanzas.append(E_valor)
         # Aumentamos E para la siguiente iteracion
-    E_valor += 0.002
 
 # Cambiamos a formato [(Esperanza,Varianza)] para facilitar los graficos
 frontera = list(zip(Esperanzas, MenoresVarianzas))
@@ -164,7 +166,7 @@ plt.show()
 
 # Exportamos con pandas a un excel
 tabla = pd.DataFrame(MenoresVarianzas, columns=['Rentabilidad', 'Varianza', 'IBEX35', 'SP500', 'EMM'])
-tabla['Rentabilidad'] = tabla['Rentabilidad'].round(4)
+tabla['Rentabilidad'] = tabla['Rentabilidad']
 tabla['Varianza'] = tabla['Varianza'].round(6)
 tabla['SP500'] = tabla['SP500'].round(4)
 tabla['IBEX35'] = tabla['IBEX35'].round(4)
