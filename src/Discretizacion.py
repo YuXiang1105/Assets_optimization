@@ -99,7 +99,7 @@ V_vals = []
 
 # Sacamos los valores de E y V para graficar la frontera eficiente en un array, para el formato de matplotlib
 for row in MenoresVarianzas:
-    E_vals.append(row[0])
+    E_vals.append(row[0])FronteraEficiente3IndicesETF
     V_vals.append(row[1])
 
 E_vals = np.array(E_vals)
@@ -173,4 +173,4 @@ tabla['IBEX35'] = tabla['IBEX35'].round(4)
 tabla['EMM'] = tabla['EMM'].round(4)
 
 print(tabla.to_string(index=False))
-tabla.to_excel("frontera_eficiente.xlsx", index=False)
+tabla.to_excel("Discretizacion.xlsx", index=False)
