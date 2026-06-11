@@ -29,7 +29,7 @@ pip install -r requirements.txt
 python -m ipykernel install --user --name=venv --display-name "Python (venv)"
 ``````
 5. Run Jupyter
-
+``````
 jupyter lab
 ``````
 ## How to execute main
