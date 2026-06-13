@@ -99,7 +99,7 @@ V_vals = []
 
 # Sacamos los valores de E y V para graficar la frontera eficiente en un array, para el formato de matplotlib
 for row in MenoresVarianzas:
-    E_vals.append(row[0])FronteraEficiente3IndicesETF
+    E_vals.append(row[0])
     V_vals.append(row[1])
 
 E_vals = np.array(E_vals)
