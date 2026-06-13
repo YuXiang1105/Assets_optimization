@@ -29,7 +29,7 @@ pip install -r requirements.txt
 python -m ipykernel install --user --name=venv --display-name "Python (venv)"
 ``````
 5. Run Jupyter
-
+``````
 jupyter lab
 ``````
 ## How to execute main
@@ -37,5 +37,4 @@ Instead of `python3 main.py` use
 ``````
 python -m src.main
 ``````
-##To see the latex document, go to the next link
-https://www.overleaf.com/read/yqfbmkpddcvx#9c5b14
+
